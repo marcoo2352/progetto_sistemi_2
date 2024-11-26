@@ -26,9 +26,11 @@ st.markdown("""As remote work becomes the new norm, it's essential to understand
 
 #prima introduzione sui dati
 
-st.markdown("<h1 style='font-size: 40px;'>Introduction of our Sample</h1", unsafe_allow_html=True)
+st.markdown("<h1 style='font-size: 40px;'>Overview of our Sample</h1", unsafe_allow_html=True)
 
-st.markdown("""As we can see from the graph below,  we are considering peaple of both genders, as well as non-binary peaple, nearly in equal number:""")
+#descrizione gender
+#intro
+st.markdown("""As we can see from the graph below,  we are considering peaple of both genders, as well as non-binary people, nearly in equal numbers:""")
 color_Gender = {
     "Female" : "pink", 
     "Male" : "blue",
@@ -36,14 +38,44 @@ color_Gender = {
     "Prefer not to say" : "grey"
 
 }
+
+
+pie_graph = (alt.Chart(data)
+    .mark_arc(
+        cornerRadius=8,
+        radius=120,
+        radius2=80)
+    .encode(
+        alt.Color("Gender").scale(domain=list(color_Gender.keys()), range=list(color_Gender.values())),
+        alt.Theta("count(Gender):Q"))
+    .properties(height = 300, width = 600))
+
+
+tot = (
+    alt.Chart(data)
+    .mark_text(radius=0, size=30)
+    .encode(alt.Text("count(Gender):Q"))   #conta il numero di elementi per ciascuna categoria
+    .transform_aggregate(count ="count()") #utilizziamo .transform_aggregate() per fare operazioni sui dati aggregati, e gli diciamo di contare in generale
+    .properties(height=300, width=600)
+)
+
 st.altair_chart(
-    alt.Chart(data).mark_bar().encode(
-        alt.X("count(Gender):Q"),
-        alt.Y("Gender"),
-        color = alt.Color("Gender:O", scale=alt.Scale(domain=list(color_Gender.keys()), range=list(color_Gender.values())))
-    )
-    .properties(height = 300, width = 600)
+    pie_graph + tot,
+    use_container_width=True
 )
 
 
+#grafico sui diversi tipi di lavori
+st.markdown("""Now let's have a look at the different Industry we are considering:""")
+
+st.altair_chart(
+    alt.Chart(data).mark_bar().encode(
+    alt.X("count(Industry)"),
+    alt.Y("Industry")
+).properties(height=300, width=600)
+    )
+
+
+
+st.markdown("We are also considering a wide range of age:")
 
