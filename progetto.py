@@ -1,3 +1,8 @@
+"""job = st.selectbox(
+    "Seleziona un lavoro",
+    jobs
+)
+"""
 #importiamo le librerie 
 import polars as pl  
 import streamlit as st
@@ -26,7 +31,7 @@ st.markdown("""As remote work becomes the new norm, it's essential to understand
 
 #prima introduzione sui dati
 
-st.markdown("<h1 style='font-size: 40px;'>Overview of our Sample</h1", unsafe_allow_html=True)
+st.markdown("<h1 style='font-size: 40px;'>1. Overview of our Sample</h1", unsafe_allow_html=True)
 
 #descrizione gender
 #intro
@@ -51,11 +56,12 @@ pie_graph = (alt.Chart(data)
     .properties(height = 300, width = 600))
 
 
+l_data = len(data)    #chiedere al prof come aggiungere  al grafico
+
 tot = (
     alt.Chart(data)
-    .mark_text(radius=0, size=30)
+    .mark_text(radius=0, size=30, color= "white")
     .encode(alt.Text("count(Gender):Q"))   #conta il numero di elementi per ciascuna categoria
-    .transform_aggregate(count ="count()") #utilizziamo .transform_aggregate() per fare operazioni sui dati aggregati, e gli diciamo di contare in generale
     .properties(height=300, width=600)
 )
 
@@ -67,9 +73,20 @@ st.altair_chart(
 
 #grafico sui diversi tipi di lavori
 st.markdown("""Now let's have a look at the different Industry we are considering:""")
+color_Industry = {
+    "Consulting" : "purple", 
+    "Finance" : "red",
+    "Healthcare" : "white",
+    "IT" : "blue",
+    "Manufacturing" :"orange",
+    "Retail" : "yellow",
+    "Education" : "green"
+
+}
 
 st.altair_chart(
     alt.Chart(data).mark_bar().encode(
+    alt.Color("Industry").scale(domain=list(color_Industry.keys()), range=list(color_Industry.values())),
     alt.X("count(Industry)"),
     alt.Y("Industry")
 ).properties(height=300, width=600)
@@ -77,5 +94,35 @@ st.altair_chart(
 
 
 
-st.markdown("We are also considering a wide range of age:")
+st.markdown("We are also considering a wide range of ages:")
 
+st.altair_chart(
+alt.Chart(data).mark_bar().encode(
+    alt.X("Age:Q", bin = True, title= "Age Class"),
+    alt.Y("count()", title = "Number of people sampled "),
+)
+)
+
+
+st.markdown("We thought that there could be differences among the regions, for this reason we decided to sample from different regions in the world:")
+
+
+
+###################### GRAFICO MONDO #################################################
+
+
+
+
+
+st.markdown("<h1 style='font-size: 40px;'>2. Data analysis</h1", unsafe_allow_html=True)
+st.markdown("""In this paragraph, we will analyze the data.
+             Our main goal is to better understand remote work and 
+             its correlation with mental health. The questions we aim to answer 
+             with this analysis are: Is there any connection between remote work and 
+             stress, depression, or other mental health conditions?
+               Is remote work physically and mentally healthier compared to traditional work settings?
+                 Is conventional work or a hybrid model more beneficial?
+                   Are there specific jobs or industries where remote work is healthier?""")
+
+
+#test di verifica d'ipotesi
